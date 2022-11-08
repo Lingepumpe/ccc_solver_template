@@ -1,0 +1,18 @@
+# python
+.eggs
+.egg-info
+dist
+*.egg-info
+.coverage
+
+# local
+.python-version
+.successfully_submitted
+
+.ipynb_checkpoints
+.mypy_cache
+.vscode
+__pycache__
+*.egg-info
+*.lock
+.env
