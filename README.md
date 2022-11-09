@@ -2,9 +2,10 @@
 
 Optimized for https://catcoder.codingcontest.org
 
-Template for fast solving of catcoder codingcontests, with two components:
+Template for fast solving of catcoder codingcontests, with two command line
+utilities:
 
-next-level # Command from command-line
+## next-level command
 - Logs into catcoder for you, checks your current level
 - Creates folder for current level, code copied from previous level or template
   Folder created: codingcontest/level${LVL_NUMBER}
@@ -12,28 +13,28 @@ next-level # Command from command-line
 - Extracts zip, input files to in/, out/ subfolders
 - Creates git commit at level start, and pushes
 
-submit-solutions # Command from command-line
+## submit-solutions command
 - Checks outputfiles from out/ subfolder of current level, checks files with cat-coder
 - Aborts on first unsuccessful file
 - If all successful: Creates git commit for level end, and pushes. Runs `next-level`
   for you if there are more levels.
 - If some successful, but not all: Creates git commit for level progress, and pushes
 
-## Prerequisites
+## Installation
 
 To install:
 
-Pre0) Install/Activate python 3.10.x or 3.11.x (with pyenv on linux)
-Pre1) Update pip: `python -m pip install --upgrade pip`
-Pre2) Install poetry:
-Linux: `curl -sSL https://install.python-poetry.org | python3 -`
-Windows Powershell: `(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -`
+- Pre0) Install/Activate python 3.10.x or 3.11.x (with pyenv on linux)
+- Pre1) Update pip: `python -m pip install --upgrade pip`
+- Pre2) Install poetry:
+  - Linux: `curl -sSL https://install.python-poetry.org | python3 -`
+  - Windows Powershell: `(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -`
 
-From the project root:
-`poetry install`
+1. From the project root:
+   `poetry install`
 
-Activate environment via
-`poetry shell`
+2. Activate environment via
+   `poetry shell`
 
 If you want additional libraries/packages, install them via:
 `poetry add dependency`
