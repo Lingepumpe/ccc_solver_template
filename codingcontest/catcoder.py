@@ -115,9 +115,13 @@ class CatCoder:
                 method="GET",
                 url=f"https://catcoder.codingcontest.org/api/contest/{self.ccc_contest_id}/file-request/{filetype}",
             ).json()
-            res = requests.get(res["url"])
-            cd_header = res.headers["content-disposition"]
-            filepath = path / re.findall(r'filename="(.+)"', cd_header)[0]
+            url = res["url"]
+            res = requests.get(url)
+            if "content-disposition" in res.headers:
+                cd_header = res.headers["content-disposition"]
+                filepath = path / re.findall(r'filename="(.+)"', cd_header)[0]
+            else:
+                filepath = path / url.split("/")[-1]
             with open(filepath, "wb") as fout:
                 fout.write(res.content)
         return filepath if is_input_files else None
