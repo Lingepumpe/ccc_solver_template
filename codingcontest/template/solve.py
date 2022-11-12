@@ -56,12 +56,17 @@ def main() -> None:
     considered_files = set(glob("in/*_example.in"))
     # considered_files = set(glob("in/*.in"))
 
+    abort_on_first_fail = True
+
     logger.remove()
     logger.add(sys.stderr, level="INFO")
     previously_successful = set()
-    if (Path("in") / ".successfully_submitted").exists():
-        with open(Path("in") / ".successfully_submitted", encoding="utf-8") as fin:
+    if (Path("out") / ".successfully_submitted").exists():
+        with open(Path("out") / ".successfully_submitted", encoding="utf-8") as fin:
             previously_successful = {line.strip() for line in fin.readlines() if line.strip()}
+
+    if len(previously_successful):
+        logger.info(f"Skipping already submitted: {', '.join(sorted(previously_successful))}")
     considered_files = considered_files - previously_successful
     catcoder = CatCoder()
 
@@ -72,7 +77,8 @@ def main() -> None:
             try:
                 submit_solutions(only_for_stage=Path(inputfile).stem, catcoder=catcoder)
             except Exception:
-                return
+                if abort_on_first_fail:
+                    return
 
 
 if __name__ == "__main__":

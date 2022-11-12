@@ -12,7 +12,9 @@ from codingcontest.next_level import commit, next_level
 
 
 def submit_solutions_cli(
-    check_all: bool = typer.Option(False, help="Force re-checking all stages"),  # noqa: B008
+    resubmit_successful: bool = typer.Option(  # noqa: B008
+        False, help="Force re-checking all stages"
+    ),
     verbose: bool = typer.Option(False, "--verbose", "-v"),  # noqa: B008
     only_for_stage: str = "",
     upload_solution_for_bonus: str = "solve.py",
@@ -21,14 +23,14 @@ def submit_solutions_cli(
         logger.remove()
         logger.add(sys.stderr, level="INFO")
     submit_solutions(
-        check_all=check_all,
+        resubmit_successful=resubmit_successful,
         only_for_stage=only_for_stage,
         upload_solution_for_bonus=upload_solution_for_bonus,
     )
 
 
 def submit_solutions(
-    check_all: bool = False,
+    resubmit_successful: bool = False,
     only_for_stage: str = "",
     upload_solution_for_bonus: str = "solve.py",
     catcoder: CatCoder | None = None,
@@ -52,7 +54,7 @@ def submit_solutions(
     else:
         existing_stages = {f"{Path(fstr).stem}" for fstr in glob(f"{output_files_path}/*.out")}
     previously_successful = set()
-    if not check_all and (output_files_path / ".successfully_submitted").exists():
+    if not resubmit_successful and (output_files_path / ".successfully_submitted").exists():
         with open(output_files_path / ".successfully_submitted", encoding="utf-8") as fin:
             previously_successful = {line.strip() for line in fin.readlines() if line.strip()}
     to_check = sorted((expected_stages & existing_stages) - previously_successful)

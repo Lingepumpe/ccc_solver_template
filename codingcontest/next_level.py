@@ -78,7 +78,7 @@ def next_level(catcoder: CatCoder | None = None) -> None:
     )
     (new_level_path / "in").mkdir(exist_ok=True)
     (new_level_path / "out").mkdir(exist_ok=True)
-    (new_level_path / "in" / ".successfully_submitted").unlink(missing_ok=True)
+    (new_level_path / "out" / ".successfully_submitted").unlink(missing_ok=True)
     if archive_path is not None:
         shutil.unpack_archive(filename=archive_path, extract_dir=new_level_path / "in")
         archive_path.unlink()
