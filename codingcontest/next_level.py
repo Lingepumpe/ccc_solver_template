@@ -1,12 +1,12 @@
+from glob import glob
 import os
+from pathlib import Path
 import shutil
 import sys
-from glob import glob
-from pathlib import Path
 
-import typer
 from git import Repo
 from loguru import logger
+import typer
 
 from codingcontest.catcoder import CatCoder
 

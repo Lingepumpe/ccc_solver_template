@@ -1,8 +1,7 @@
-import sys
 from dataclasses import dataclass
 from glob import glob
 from pathlib import Path
-from typing import Type
+import sys
 
 from loguru import logger
 
@@ -18,9 +17,9 @@ class Input:
     input_file_stem: str
 
     @classmethod
-    def from_file(cls: Type["Input"], filename: str) -> "Input":
+    def from_file(cls: type["Input"], filename: str) -> "Input":
         powers = []
-        with open(filename, encoding="utf-8") as fin:
+        with Path(filename).open(encoding="utf-8") as fin:
             max_power = int(next(fin))
             prices_count = int(next(fin))
             for _ in fin:
@@ -38,8 +37,8 @@ class Output:
     times: list[int]
 
     def write_file(self, output_stem: str) -> None:
-        with open(
-            Path("out") / f"{output_stem}.out", "w", encoding="utf-8", newline="\r\n"
+        with (Path("out") / f"{output_stem}.out").open(
+            "w", encoding="utf-8", newline="\r\n"
         ) as fout:
             fout.write(f"{len(self.times)}\n")
             for time in self.times:
@@ -62,7 +61,7 @@ def main() -> None:
     logger.add(sys.stderr, level="INFO")
     previously_successful = set()
     if (Path("out") / ".successfully_submitted").exists():
-        with open(Path("out") / ".successfully_submitted", encoding="utf-8") as fin:
+        with (Path("out") / ".successfully_submitted").open(encoding="utf-8") as fin:
             previously_successful = {line.strip() for line in fin.readlines() if line.strip()}
 
     if len(previously_successful):
@@ -76,7 +75,7 @@ def main() -> None:
         if solve(inclass):
             try:
                 submit_solutions(only_for_stage=Path(inputfile).stem, catcoder=catcoder)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 if abort_on_first_fail:
                     return
 

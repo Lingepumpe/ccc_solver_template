@@ -1,14 +1,15 @@
-import os
-import sys
 from glob import glob
+import os
 from pathlib import Path
+import sys
 
-import typer
 from git import Repo
 from loguru import logger
+import typer
 
 from codingcontest.catcoder import CatCoder
-from codingcontest.next_level import commit, next_level
+from codingcontest.next_level import commit
+from codingcontest.next_level import next_level
 
 
 def submit_solutions_cli(
@@ -86,7 +87,7 @@ def submit_solutions(
 
         if catcoder_level_info.level_nr == catcoder_level_info.max_level_nr:
             logger.info("🎉🥳 Congrats, all levels complete! 🥳🎉")
-            raise typer.Exit()
+            raise typer.Exit
         else:
             logger.info(f"🥳 Level {catcoder_level_info.level_nr} complete! 🎉\n")
 

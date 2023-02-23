@@ -17,14 +17,10 @@ gitpython = ">=3.1.29"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=22.10.0"
-flake8 = ">=5.0.4"
-flake8-bugbear = ">=22.10.27"
-isort = ">=5.10.1"
 jupyterlab = ">=3.5.0"
 matplotlib = ">=3.6.2"
 mypy = ">=0.982"
 pdbpp = ">=0.10.3"
-pylint = ">=2.15.5"
 scikit-learn = ">=1.1.3"
 seaborn = ">=0.12.1"
 Flake8-pyproject = ">=1.1.0.post0"
@@ -40,15 +36,6 @@ submit-solutions = 'codingcontest.submit_solutions:run'
 
 [tool.black]
 line-length = 99
-
-[tool.isort]
-profile = "black"
-
-[tool.flake8]
-select = ["C", "E", "F", "W", "B", "B950"]
-extend-ignore = ["E203", "E231", "E501", "W503"]
-max-line-length = 99
-count = true
 
 [tool.mypy]
 ignore_missing_imports = true

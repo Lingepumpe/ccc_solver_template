@@ -1,12 +1,14 @@
+from dataclasses import dataclass
 import os
 import re
-from dataclasses import dataclass
-from pathlib import Path
-from typing import NamedTuple
+from typing import NamedTuple, TYPE_CHECKING
 
-import requests
 from dotenv import load_dotenv
 from loguru import logger
+import requests
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 load_dotenv()
 
@@ -30,16 +32,19 @@ class CatCoder:
     ccc_password: str = ""
     ccc_contest_id: str = ""
 
-    def __post_init__(self):
-        self.ccc_username = os.getenv("CCC_USERNAME")
-        self.ccc_password = os.getenv("CCC_PASSWORD")
-        self.ccc_contest_id = os.getenv("CCC_CONTEST_ID")
+    def __post_init__(self) -> None:
+        self.ccc_username = os.getenv("CCC_USERNAME", "")
+        self.ccc_password = os.getenv("CCC_PASSWORD", "")
+        self.ccc_contest_id = os.getenv("CCC_CONTEST_ID", "")
+        assert self.ccc_username
+        assert self.ccc_password
+        assert self.ccc_contest_id
         self.login()
 
     def request(self, method: str, url: str, **kwargs: dict) -> requests.Response:
         logger.debug(f"{method}: {url}")
         try:
-            res = self.session.request(method, url, **kwargs)  # type: ignore
+            res = self.session.request(method, url, **kwargs)  # type: ignore[arg-type]
         except (requests.RequestException, requests.ConnectionError) as e:
             logger.warning(f"Got an exception during {method} {url}: {e}")
             res = requests.Response()
@@ -122,21 +127,21 @@ class CatCoder:
                 filepath = path / re.findall(r'filename="(.+)"', cd_header)[0]
             else:
                 filepath = path / url.split("/")[-1]
-            with open(filepath, "wb") as fout:
+            with filepath.open("wb") as fout:
                 fout.write(res.content)
         return filepath if is_input_files else None
 
     def upload_solution(self, path: Path, stage_name: str, is_output_files: bool) -> bool:
         if is_output_files:
-            with open(path, "rb") as fin:
+            with path.open("rb") as fin:
                 files = [("file", (path.parts[-1], fin, "text/plain"))]
                 res = self.request(
                     method="POST",
                     url=f"https://catcoder.codingcontest.org/api/game/{self.ccc_contest_id}/upload/solution/{stage_name}",
-                    files=files,  # type: ignore
+                    files=files,  # type: ignore[arg-type]
                 ).json()
         else:
-            with open(path, "r", encoding="utf-8") as fin:
+            with path.open(encoding="utf-8") as fin:
                 solution = next(fin).strip()  # consider only first line
                 logger.debug(f"Submitting '{solution}' for stage {stage_name}")
                 res = self.request(
@@ -148,7 +153,7 @@ class CatCoder:
         return res["results"][stage_name] == "VALID"
 
     def upload_source(self, path: Path) -> None:
-        with open(path, "rb") as fin:
+        with path.open("rb") as fin:
             files = [("file", (path.parts[-1], fin, "text/plain"))]
             self.request(
                 method="POST",
