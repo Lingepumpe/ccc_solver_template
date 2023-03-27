@@ -2,6 +2,7 @@ from glob import glob
 import os
 from pathlib import Path
 import sys
+from typing import Optional
 
 from git import Repo
 from loguru import logger
@@ -11,6 +12,8 @@ from codingcontest.catcoder import CatCoder
 from codingcontest.next_level import commit
 from codingcontest.next_level import next_level
 
+StrOrNone = Optional[str]  # works around typer not supporting "str | None"
+
 
 def submit_solutions_cli(
     resubmit_successful: bool = typer.Option(  # noqa: B008
@@ -18,7 +21,7 @@ def submit_solutions_cli(
     ),
     verbose: bool = typer.Option(False, "--verbose", "-v"),  # noqa: B008
     only_for_stage: str = "",
-    upload_solution_for_bonus: str = "solve.py",
+    upload_solution_for_bonus: StrOrNone = None,
 ) -> None:
     if not verbose:
         logger.remove()
@@ -33,7 +36,7 @@ def submit_solutions_cli(
 def submit_solutions(
     resubmit_successful: bool = False,
     only_for_stage: str = "",
-    upload_solution_for_bonus: str = "solve.py",
+    upload_solution_for_bonus: str | None = None,
     catcoder: CatCoder | None = None,
 ) -> None:
     root_dir = Path(__file__).parent
@@ -44,6 +47,8 @@ def submit_solutions(
             raise typer.Exit(code=1)
     if catcoder is None:
         catcoder = CatCoder()
+    if upload_solution_for_bonus is None:
+        upload_solution_for_bonus = os.getenv("CCC_GIT_MODE", None)
     catcoder_level_info = catcoder.current_level_info()
     output_files_path = root_dir / f"level{catcoder_level_info.level_nr}" / "out"
     if not output_files_path.exists():
@@ -79,7 +84,12 @@ def submit_solutions(
                 add_path=output_files_path,
                 add_updated=True,
             )
-        if (solution_path := Path(output_files_path.parent) / upload_solution_for_bonus).exists():
+        if (
+            upload_solution_for_bonus is not None
+            and (
+                solution_path := Path(output_files_path.parent) / upload_solution_for_bonus
+            ).exists()
+        ):
             catcoder.upload_source(path=solution_path)
             logger.info(f"Solution {upload_solution_for_bonus} uploaded for bonus minutes]")
         else:
@@ -88,10 +98,9 @@ def submit_solutions(
         if catcoder_level_info.level_nr == catcoder_level_info.max_level_nr:
             logger.info("🎉🥳 Congrats, all levels complete! 🥳🎉")
             raise typer.Exit
-        else:
-            logger.info(f"🥳 Level {catcoder_level_info.level_nr} complete! 🎉\n")
+        logger.info(f"🥳 Level {catcoder_level_info.level_nr} complete! 🎉\n")
 
-            next_level(catcoder=catcoder)
+        next_level(catcoder=catcoder)
     elif successful_stages:
         with open(output_files_path / ".successfully_submitted", "w", encoding="utf-8") as fout:
             fout.writelines(

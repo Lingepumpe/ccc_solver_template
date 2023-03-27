@@ -1,14 +1,12 @@
 from dataclasses import dataclass
 import os
+from pathlib import Path
 import re
-from typing import NamedTuple, TYPE_CHECKING
+from typing import NamedTuple
 
 from dotenv import load_dotenv
 from loguru import logger
 import requests
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 load_dotenv()
 

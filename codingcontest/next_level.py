@@ -69,9 +69,7 @@ def next_level(catcoder: CatCoder | None = None) -> None:
     shutil.copytree(
         copy_from,
         new_level_path,
-        ignore=lambda _, names: [
-            n for n in names if n.endswith(".in") or n.endswith(".out") or n.endswith(".pdf")
-        ],
+        ignore=lambda _, names: [n for n in names if n.endswith((".in", ".out", ".pdf"))],
     )
     archive_path = catcoder.download_level_files(
         new_level_path, catcoder_level_info.is_input_files
@@ -91,7 +89,7 @@ def next_level(catcoder: CatCoder | None = None) -> None:
             with open(new_level_path / "in" / f"{stage_name}.in", "w", encoding="utf-8") as fout:
                 fout.write(f"{input_content}\n")
 
-    logger.debug("Commiting level start")
+    logger.info(f"Created and filled '{new_level_path}'")
     if os.getenv("CCC_GIT_MODE") != "none":
         commit(
             gitrepo, message=f"level{catcoder_level_info.level_nr} start", add_path=new_level_path
