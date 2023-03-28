@@ -14,6 +14,7 @@ loguru = ">=0.6.0"
 python-dotenv = ">=0.21.0"
 typer = ">=0.7.0"
 gitpython = ">=3.1.29"
+types-requests = "^2.28.11.16"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=22.10.0"
@@ -39,7 +40,7 @@ submit-solutions = 'codingcontest.submit_solutions:run'
 line-length = 99
 
 [tool.mypy]
-files = ["codingcontest", "tests"]
+files = ["codingcontest"]
 python_version = "3.10"
 warn_unreachable = true
 warn_return_any = true
@@ -77,6 +78,7 @@ ignore = [
 ]
 
 unfixable = [
+    "ARG",  # Don't fix any "unused arguments" errors
     "B007", # Don't automatically prefix loop control variable with "_" if unused
     "ERA",  # Don't delete commented code
     "F401", # Don't remove unused imports

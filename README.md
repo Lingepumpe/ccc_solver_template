@@ -9,18 +9,19 @@ utilities:
 
 - Logs into catcoder for you, checks your current level
 - Creates folder for current level, code copied from previous level or template
-  Folder created: codingcontest/level${LVL_NUMBER}
+  folder: codingcontest/level${LVL_NUMBER}
 - Fetches pdf+zip of current level from catcoder
-- Extracts zip, input files to in/, out/ subfolders
-- Creates git commit at level start, and pushes
+- Extracts zip, input files to in/, output files to out/
+- Creates git commit at level start, and pushes (depending on CCC_GIT_MODE)
 
 ## submit-solutions command
 
-- Checks outputfiles from out/ subfolder of current level, checks files with cat-coder
+- Checks output files from out/ subfolder of current level, validates files with cat-coder
 - Aborts on first unsuccessful file
-- If all successful: Creates git commit for level end, and pushes. Runs `next-level`
-  for you if there are more levels.
-- If some successful, but not all: Creates git commit for level progress, and pushes
+- If all successful: Creates git commit for level end, and pushes. (depending on CCC_GIT_MODE)
+- Automatically runs `next-level` for you if there are more levels.
+- If partly successful, but not all: Creates git commit for level progress, and pushes.
+  Remembers which parts were successful, does not re-submit them on re-run.
 
 ## Installation
 
@@ -88,7 +89,8 @@ git support, make sure you can commit.
   for level1.
 - Run `next-level`, this should create codingcontest/level1/
 - while not done:
-  - Edit solver code (solver.py if you are using the python template)
-  - Python solver.py will submit and call next level once the level is done.
-  - Otherwise, you can run `submit-solutions` manually to validate your .out files.
-  - If a level is complete, `submit-solutions` will automatically run `next-level`
+  - Edit solver code (levelX/solver.py if you are using the python template)
+  - `python solver.py` will submit and call next level once the level is done.
+  - If not using python, run `submit-solutions` manually to validate your .out files.
+  - If a level is complete, `submit-solutions` will automatically fetch the following
+    level, extract it and copy your previous level code there. No need for `next-level`.
