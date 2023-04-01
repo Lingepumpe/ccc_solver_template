@@ -60,7 +60,7 @@ CCC_USERNAME=catcoder_username_or_email
 CCC_PASSWORD=catcoder_password
 CCC_CONTEST_ID=<from URL of contest, e.g. 4344>
 CCC_GIT_MODE=<none|local|remote>
-CCC_SOLUTION_SUBMIT_FILE=solution.py
+CCC_SOLUTION_SUBMIT_FILE=solve.py
 ```
 
 - Username (can be an email) + Password of the catcoder login.
